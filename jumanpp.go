@@ -99,3 +99,7 @@ func (j *Jumanpp) parseLine(line string) {
 func (j *Jumanpp) MrphList() []*Morpheme {
 	return j.mrph_list
 }
+
+func (j *Jumanpp) Clear() {
+	j.mrph_list = make([]*Morpheme, 0)
+}
