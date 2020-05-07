@@ -53,7 +53,9 @@ func (j *Jumanpp) ResultAll(filename string) error {
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		line := scanner.Text()
-		j.parseLine(line)
+		if line != "EOS" {
+			j.parseLine(line)
+		}
 	}
 	if err := scanner.Err(); err != nil {
 		return err
