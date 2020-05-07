@@ -1,9 +1,7 @@
 package gojumanpp
 
 import (
-	"bufio"
 	"fmt"
-	"os"
 	"regexp"
 	"strconv"
 	"strings"
@@ -48,31 +46,6 @@ func (j *Jumanpp) Analysis(text string) error {
 }
 func (j *Jumanpp) Result(line string) {
 	j.parseLine(line)
-}
-func (j *Jumanpp) ResultAll(filename string) error {
-	file, err := os.Open(filename)
-	if err != nil {
-		return err
-	}
-	defer file.Close()
-
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		line := scanner.Text()
-		if line == "EOS" {
-			continue
-		}
-
-		err := j.parseLine(line)
-		if err != nil {
-			return err
-		}
-	}
-	if err := scanner.Err(); err != nil {
-		return err
-	}
-
-	return nil
 }
 func (j *Jumanpp) parseLine(line string) error {
 	split := strings.Split(line, " ")
