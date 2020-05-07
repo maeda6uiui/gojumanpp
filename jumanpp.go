@@ -2,6 +2,7 @@ package gojumanpp
 
 import (
 	"bufio"
+	"errors"
 	"os"
 	"regexp"
 	"strconv"
@@ -33,8 +34,13 @@ func (j *Jumanpp) Analysis(text string) error {
 	lines := strings.Split(string(out), "\n")
 	lines = lines[:len(lines)-1]
 	for _, line := range lines {
-		if line != "EOS" {
-			j.parseLine(line)
+		if line == "EOS" {
+			continue
+		}
+
+		err := j.parseLine(line)
+		if err != nil {
+			return err
 		}
 	}
 
@@ -53,8 +59,13 @@ func (j *Jumanpp) ResultAll(filename string) error {
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		line := scanner.Text()
-		if line != "EOS" {
-			j.parseLine(line)
+		if line == "EOS" {
+			continue
+		}
+
+		err := j.parseLine(line)
+		if err != nil {
+			return err
 		}
 	}
 	if err := scanner.Err(); err != nil {
@@ -63,8 +74,11 @@ func (j *Jumanpp) ResultAll(filename string) error {
 
 	return nil
 }
-func (j *Jumanpp) parseLine(line string) {
+func (j *Jumanpp) parseLine(line string) error {
 	split := strings.Split(line, " ")
+	if len(split) < 11 {
+		return errors.New("不正な形式の文字列です。")
+	}
 
 	m := NewMorpheme()
 	m.Midasi = split[0]
@@ -90,10 +104,13 @@ func (j *Jumanpp) parseLine(line string) {
 	for _, str := range split2 {
 		if strings.Contains(str, "代表表記") {
 			m.Repname = strings.Split(str, ":")[1]
+			break
 		}
 	}
 
 	j.mrph_list = append(j.mrph_list, m)
+
+	return nil
 }
 
 func (j *Jumanpp) MrphList() []*Morpheme {
