@@ -2,7 +2,7 @@ package gojumanpp
 
 import (
 	"bufio"
-	"errors"
+	"fmt"
 	"os"
 	"regexp"
 	"strconv"
@@ -77,7 +77,7 @@ func (j *Jumanpp) ResultAll(filename string) error {
 func (j *Jumanpp) parseLine(line string) error {
 	split := strings.Split(line, " ")
 	if len(split) < 11 {
-		return errors.New("不正な形式の文字列です。")
+		return fmt.Errorf("不正な形式の文字列です。<<%v>>", line)
 	}
 
 	m := NewMorpheme()
